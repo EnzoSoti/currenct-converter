@@ -10,7 +10,8 @@ import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
 import LogoutButton from './components/LogoutButton';
 import { AuthProvider, useAuth } from './AuthContext';
-import UserInfo from './components/UserInfo'; // Import the new UserInfo component
+import UserInfo from './components/UserInfo';
+import Sidebar from './components/Sidebar';
 import './css/index.css';
 
 function App() {
@@ -77,36 +78,53 @@ function App() {
   };
 
   const CurrencyConverter = () => {
+    const [activeTab, setActiveTab] = useState('converter'); // State to manage active tab
+  
     return (
       <div className="min-h-screen bg-gray-100 py-8">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="flex justify-end mb-4">
-            <LogoutButton />
-          </div>
-
-          {/* Display the logged-in user info */}
-          <UserInfo />
-
-          <h1 className="text-3xl font-bold text-center text-blue-600 mb-8">Currency Converter</h1>
-
-          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-            <CurrencyForm onConvert={convertCurrency} loading={loading} />
-          </div>
-
-          {error && (
-            <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded">
-              <p>{error}</p>
+        <div className="max-w-6xl mx-auto px-4 flex gap-6">
+          {/* Sidebar */}
+          <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+  
+          {/* Main Content */}
+          <div className="flex-1">
+            <div className="flex justify-end mb-4">
+              <LogoutButton />
             </div>
-          )}
-
-          {result && (
-            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-              <ResultDisplay result={result} />
-            </div>
-          )}
-
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <ExchangeRates rates={rates} />
+  
+            {/* Display the logged-in user info */}
+            <UserInfo />
+  
+            <h1 className="text-3xl font-bold text-center text-blue-600 mb-8">
+              {activeTab === 'converter' ? 'Currency Converter' : 'Exchange Rates'}
+            </h1>
+  
+            {/* Conditional Rendering Based on Active Tab */}
+            {activeTab === 'converter' && (
+              <>
+                <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+                  <CurrencyForm onConvert={convertCurrency} loading={loading} />
+                </div>
+  
+                {error && (
+                  <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded">
+                    <p>{error}</p>
+                  </div>
+                )}
+  
+                {result && (
+                  <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <ResultDisplay result={result} />
+                  </div>
+                )}
+              </>
+            )}
+  
+            {activeTab === 'rates' && (
+              <div className="bg-white rounded-lg shadow-md p-6">
+                <ExchangeRates rates={rates} />
+              </div>
+            )}
           </div>
         </div>
       </div>
